@@ -16,7 +16,7 @@ if [ ! -f $INSTALLING ]; then
 
 	# Download latest compiled DUO package from GitHub
 	mkdir /home/volumio/duo
-	wget https://github.com/Saiyato/volumio-duo-plugin/raw/master/binaries/duo-unix_1.11.4-1_armhf.deb -P /home/volumio/duo
+	wget https://github.com/Saiyato/volumio-duo-plugin/blob/master/binaries/duo-unix_1.11.4-1_armhf.deb -P /home/volumio/duo
 
 	# Install packages (server and client) and dependencies
 	for f in /home/volumio/duo/duo-unix*.deb; do dpkg -i "$f"; done

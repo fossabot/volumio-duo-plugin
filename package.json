@@ -10,7 +10,7 @@
 	"license": "GNUv2,
 	"volumio_info": {
 		"prettyName": "Cisco DUO",
-		"icon": "fas fa-shield-alt",
+		"icon": "fa-shield",
 		"plugin_type": "miscellanea"
 	},
 	"dependencies": {
