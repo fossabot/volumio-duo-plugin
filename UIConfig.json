@@ -1,0 +1,78 @@
+{
+	"page": {
+		"label": "TRANSLATE.SNAPSERVER.SNAPSERVERCONF"
+	},
+	"sections": [{
+		"id": "section_general",
+		"element": "section",
+		"label": "TRANSLATE.SNAPSERVER.GENERAL",
+		"doc": "TRANSLATE.SNAPSERVER.D_GENERAL",
+		"description": "TRANSLATE.SNAPSERVER.DD_GENERAL",
+		"icon": "fa-server",
+		"onSave": {
+			"type": "controller",
+			"endpoint": "audio_interface/snapserver",
+			"method": "updateConfigs"
+		},
+		"saveButton": {
+			"label": "TRANSLATE.SNAPSERVER.SAVE",
+			"data": ["main_stream_name",
+			"enable_main_stream_expert_settings",
+			"main_stream_sample_rate",
+			"main_stream_bit_depth",
+			"main_stream_channels",
+			"main_stream_codec",
+			"enable_secondary_stream",
+			"secondary_stream_name",
+			"enable_secondary_stream_expert_settings",
+			"secondary_stream_sample_rate",
+			"secondary_stream_bit_depth",
+			"secondary_stream_channels",
+			"secondary_stream_codec",
+			"enable_debug_logging"]
+		},
+		"content": [{
+			"id": "enable_duo_login",
+			"element": "switch",
+			"doc": "TRANSLATE.SNAPSERVER.D_ENABLE_EXPERT_SETTINGS",
+			"description": "TRANSLATE.SNAPSERVER.DD_EXPERT_SETTING",
+			"label": "TRANSLATE.SNAPSERVER.ENABLE_MAIN_STREAM_EXPERT_SETTINGS",
+			"value": false
+		},
+		{
+			"id": "ikey",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.SNAPSERVER.D_MAIN_STREAM_NAME",
+			"description": "TRANSLATE.SNAPSERVER.DD_MAIN_STREAM_NAME",
+			"label": "TRANSLATE.SNAPSERVER.MAIN_STREAM_NAME",
+			"value": "Volumio_Main_Stream"
+		},
+		{
+			"id": "secret",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.SNAPSERVER.D_MAIN_STREAM_NAME",
+			"description": "TRANSLATE.SNAPSERVER.DD_MAIN_STREAM_NAME",
+			"label": "TRANSLATE.SNAPSERVER.MAIN_STREAM_NAME",
+			"value": "Volumio_Main_Stream"
+		},
+		{
+			"id": "url",
+			"element": "input",
+			"type": "text",
+			"doc": "TRANSLATE.SNAPSERVER.D_MAIN_STREAM_NAME",
+			"description": "TRANSLATE.SNAPSERVER.DD_MAIN_STREAM_NAME",
+			"label": "TRANSLATE.SNAPSERVER.MAIN_STREAM_NAME",
+			"value": "Volumio_Main_Stream"
+		},
+		{
+			"id": "enable_main_stream_expert_settings",
+			"element": "switch",
+			"doc": "TRANSLATE.SNAPSERVER.D_ENABLE_EXPERT_SETTINGS",
+			"description": "TRANSLATE.SNAPSERVER.DD_EXPERT_SETTING",
+			"label": "TRANSLATE.SNAPSERVER.ENABLE_MAIN_STREAM_EXPERT_SETTINGS",
+			"value": false
+		}]
+	}]
+}
