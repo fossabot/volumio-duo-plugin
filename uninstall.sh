@@ -2,10 +2,11 @@
 
 # First remove all configuration, because if DUO uninstall fails and the configuration is still in place, it breaks authentication
 sed 's/^ChallengeResponseAuthentication.*/ChallengeResponseAuthentication no/g' -i /etc/ssh/sshd_config
+sed 's/^PasswordAuthentication .*/#PasswordAuthentication  yes/g' -i /etc/ssh/sshd_config
 
 echo "Disabled challenge response authentication setting..."
 
-if grep -q "^#@include common-auth" "/etc/pam.d/sshd"; then
+if grep -q "duo" "/etc/pam.d/sshd"; then
 	sed '/^auth  required pam_permit.so.*/d' -i /etc/pam.d/sshd
 	sed '/^auth  requisite pam_deny.so.*/d' -i /etc/pam.d/sshd
 	sed '/^auth  \[success=1 default=ignore\] pam_duo.so.*/d' -i /etc/pam.d/sshd

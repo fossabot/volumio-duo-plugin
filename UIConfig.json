@@ -1,77 +1,82 @@
 {
 	"page": {
-		"label": "TRANSLATE.SNAPSERVER.SNAPSERVERCONF"
+		"label": "TRANSLATE.DUO.DUOCONF"
 	},
 	"sections": [{
 		"id": "section_general",
 		"element": "section",
-		"label": "TRANSLATE.SNAPSERVER.GENERAL",
-		"doc": "TRANSLATE.SNAPSERVER.D_GENERAL",
-		"description": "TRANSLATE.SNAPSERVER.DD_GENERAL",
-		"icon": "fa-server",
+		"label": "TRANSLATE.DUO.GENERAL",
+		"doc": "TRANSLATE.DUO.D_GENERAL",
+		"description": "TRANSLATE.DUO.DD_GENERAL",
+		"icon": "fa-shield-alt",
 		"onSave": {
 			"type": "controller",
-			"endpoint": "audio_interface/snapserver",
-			"method": "updateConfigs"
+			"endpoint": "miscellanea/duo",
+			"method": "saveConfig"
 		},
 		"saveButton": {
-			"label": "TRANSLATE.SNAPSERVER.SAVE",
-			"data": ["main_stream_name",
-			"enable_main_stream_expert_settings",
-			"main_stream_sample_rate",
-			"main_stream_bit_depth",
-			"main_stream_channels",
-			"main_stream_codec",
-			"enable_secondary_stream",
-			"secondary_stream_name",
-			"enable_secondary_stream_expert_settings",
-			"secondary_stream_sample_rate",
-			"secondary_stream_bit_depth",
-			"secondary_stream_channels",
-			"secondary_stream_codec",
-			"enable_debug_logging"]
+			"label": "TRANSLATE.DUO.SAVE",
+			"data": ["enable_duo",
+			"ikey",
+			"skey",
+			"api_host",
+			"failmode",
+			"disable_password"]
 		},
 		"content": [{
-			"id": "enable_duo_login",
+			"id": "enable_duo",
 			"element": "switch",
-			"doc": "TRANSLATE.SNAPSERVER.D_ENABLE_EXPERT_SETTINGS",
-			"description": "TRANSLATE.SNAPSERVER.DD_EXPERT_SETTING",
-			"label": "TRANSLATE.SNAPSERVER.ENABLE_MAIN_STREAM_EXPERT_SETTINGS",
-			"value": false
+			"doc": "TRANSLATE.DUO.D_ENABLE_DUO",
+			"description": "TRANSLATE.DUO.DD_ENABLE_DUO",
+			"label": "TRANSLATE.DUO.ENABLE_DUO",
+			"value": true
 		},
 		{
 			"id": "ikey",
 			"element": "input",
 			"type": "text",
-			"doc": "TRANSLATE.SNAPSERVER.D_MAIN_STREAM_NAME",
-			"description": "TRANSLATE.SNAPSERVER.DD_MAIN_STREAM_NAME",
-			"label": "TRANSLATE.SNAPSERVER.MAIN_STREAM_NAME",
-			"value": "Volumio_Main_Stream"
+			"doc": "TRANSLATE.DUO.D_INTEGRATION_KEY",
+			"description": "TRANSLATE.DUO.DD_INTEGRATION_KEY",
+			"label": "TRANSLATE.DUO.INTEGRATION_KEY",
+			"value": ""
 		},
 		{
-			"id": "secret",
+			"id": "skey",
 			"element": "input",
 			"type": "text",
-			"doc": "TRANSLATE.SNAPSERVER.D_MAIN_STREAM_NAME",
-			"description": "TRANSLATE.SNAPSERVER.DD_MAIN_STREAM_NAME",
-			"label": "TRANSLATE.SNAPSERVER.MAIN_STREAM_NAME",
-			"value": "Volumio_Main_Stream"
+			"doc": "TRANSLATE.DUO.D_SECRET_KEY",
+			"description": "TRANSLATE.DUO.DD_SECRET_KEY",
+			"label": "TRANSLATE.DUO.SECRET_KEY",
+			"value": ""
 		},
 		{
-			"id": "url",
+			"id": "api_host",
 			"element": "input",
 			"type": "text",
-			"doc": "TRANSLATE.SNAPSERVER.D_MAIN_STREAM_NAME",
-			"description": "TRANSLATE.SNAPSERVER.DD_MAIN_STREAM_NAME",
-			"label": "TRANSLATE.SNAPSERVER.MAIN_STREAM_NAME",
-			"value": "Volumio_Main_Stream"
+			"doc": "TRANSLATE.DUO.D_API_HOST",
+			"description": "TRANSLATE.DUO.DD_API_HOST",
+			"label": "TRANSLATE.DUO.API_HOST",
+			"value": ""
 		},
 		{
-			"id": "enable_main_stream_expert_settings",
+			"id": "failmode",
+			"element": "select",
+			"type": "text",
+			"doc": "TRANSLATE.DUO.D_FAIL_MODE",
+			"description": "TRANSLATE.DUO.DD_FAIL_MODE",
+			"label": "TRANSLATE.DUO.FAIL_MODE",
+			"value": {
+				"value": safe,
+				"label": "Safe"
+			},
+			"options": []
+		},
+		{
+			"id": "disable_password",
 			"element": "switch",
-			"doc": "TRANSLATE.SNAPSERVER.D_ENABLE_EXPERT_SETTINGS",
-			"description": "TRANSLATE.SNAPSERVER.DD_EXPERT_SETTING",
-			"label": "TRANSLATE.SNAPSERVER.ENABLE_MAIN_STREAM_EXPERT_SETTINGS",
+			"doc": "TRANSLATE.DUO.D_DISABLE_PASSWORD",
+			"description": "TRANSLATE.DUO.DD_DISABLE_PASSWORD",
+			"label": "TRANSLATE.DUO.DISABLE_PASSWORD",
 			"value": false
 		}]
 	}]

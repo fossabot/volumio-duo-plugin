@@ -16,14 +16,16 @@ if [ ! -f $INSTALLING ]; then
 
 	# Download latest compiled DUO package from GitHub
 	mkdir /home/volumio/duo
-	wget $(curl -s https://api.github.com/repos/badaix/snapcast/releases/latest | grep 'amd64' | grep 'server' | cut -d\" -f4) -P /home/volumio/duo
+	wget https://github.com/Saiyato/volumio-duo-plugin/raw/master/binaries/duo-unix_1.11.4-1_armhf.deb -P /home/volumio/duo
 
 	# Install packages (server and client) and dependencies
 	for f in /home/volumio/duo/duo-unix*.deb; do dpkg -i "$f"; done
 	apt-get update && apt-get -f -y install
+	chown -R volumio:volumio /etc/duo
 		
 	# Configure SSH
 	sed '/^ChallengeResponseAuthentication/{h;s/.*/ChallengeResponseAuthentication yes/};${x;/^$/{s//ChallengeResponseAuthentication yes/;H};x}' -i /etc/ssh/sshd_config
+	sed '/^PasswordAuthentication /{h;s/.*/PasswordAuthentication  yes/};${x;/^$/{s//PasswordAuthentication yes/;H};x}' -i /etc/ssh/sshd_config
 	sed '/^UseDNS/{h;s/.*/UseDNS no/};${x;/^$/{s//UseDNS no/;H};x}' -i /etc/ssh/sshd_config
 	
 	# Configure PAM modules | removed from setup, because it breaks authentication if DUO is not configured properly
