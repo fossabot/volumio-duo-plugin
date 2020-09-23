@@ -15,9 +15,7 @@ function duo(context) {
 	this.logger = this.context.logger;
 	this.configManager = this.context.configManager;
 
-}
-
-
+};
 
 duo.prototype.onVolumioStart = function()
 {
@@ -27,12 +25,11 @@ duo.prototype.onVolumioStart = function()
 	this.config.loadFile(configFile);
 
     return libQ.resolve();
-}
+};
 
 duo.prototype.onStart = function() {
     var self = this;
 	var defer=libQ.defer();
-
 
 	// Once the Plugin has successfull started resolve the promise
 	defer.resolve();
@@ -64,16 +61,10 @@ duo.prototype.getUIConfig = function() {
 	
     var lang_code = this.commandRouter.sharedVars.get('language_code');
 	var failmodes = fs.readJsonSync((__dirname + '/options/failmodes.json'),  'utf8', {throws: false});
-
+	
     self.commandRouter.i18nJson(__dirname+'/i18n/strings_'+lang_code+'.json',
         __dirname+'/i18n/strings_en.json',
         __dirname + '/UIConfig.json')
-		.then(function(evaluate)
-		{
-			console.log('$$$ Evaluating settings');
-			// Verify configs			
-			defer.resolve(evaluate);
-		})
         .then(function(uiconf)
         {
 			uiconf.sections[0].content[0].value = self.config.get('enable_duo');
@@ -106,7 +97,7 @@ duo.prototype.getUIConfig = function() {
 
 duo.prototype.getConfigurationFiles = function() {
 	return ['config.json'];
-}
+};
 
 duo.prototype.setUIConfig = function(data) {
 	var self = this;
@@ -137,13 +128,13 @@ duo.prototype.saveConfig = function(data)
 	self.config.set('failmode', data['failmode'].value);
 	self.config.set('disable_password', data['disable_password']);
 	
-	self.logger.info("Successfully updated snapserver configuration");
-	self.toggleDuoPAM();
+	self.logger.info("Successfully updated DUO configuration");
+	self.toggleduo();
 	
 	return defer.promise;
 };
 
-duo.prototype.toggleDuoPAM = function()
+duo.prototype.toggleduo = function()
 {
 	var self = this;
 	var defer = libQ.defer();
@@ -156,19 +147,7 @@ duo.prototype.toggleDuoPAM = function()
 		{ placeholder: "${FAILMODE}", replacement: self.config.get('failmode') }
 	];
 	
-	self.createDuoConfig(pluginName, replacementDictionary)
-	.then(function (activateConfig) {
-		var edefer = libQ.defer();
-		exec("/bin/mv " + __dirname + "/pam_duo.conf /etc/duo/pam_duo.conf", {uid:1000, gid:1000}, function (error, stout, stderr) {
-			if(error)
-			{
-				console.log(stderr);
-				self.commandRouter.pushConsoleMessage('Could not activate config with error: ' + error);
-				self.commandRouter.pushToastMessage('error', "Activating configuration failed", "Failed to activate DUO configuration file with error: " + error);
-				edefer.reject(new Error(error));
-			}
-		});
-	})
+	self.createDuoConfig(replacementDictionary)
 	.then(function (copy_sshd_config) {
 		exec("/usr/bin/rsync --ignore-missing-args /etc/pam.d/sshd "+ __dirname +"/templates/sshd", {uid:1000, gid:1000}, function (error, stout, stderr) {
 			if(error)
@@ -178,16 +157,36 @@ duo.prototype.toggleDuoPAM = function()
 			}
 		});
 	})
+	.then(function (prepare_pwd_file) {
+		if(self.config.get("disable_password"))
+		{
+			exec("/bin/touch "+ __dirname +"/templates/disable_password", {uid:1000, gid:1000}, function (error, stout, stderr) {
+				if(error)
+				{
+					self.logger.error('Could not touch disable_password with error: ' + error);
+					defer.reject(new Error(error));
+				}
+			});
+		}
+		else
+		{
+			exec("/bin/rm "+ __dirname +"/templates/disable_password", {uid:1000, gid:1000}, function (error, stout, stderr) {
+				if(error)
+				{
+					self.logger.error('Could not touch disable_password with error: ' + error);
+					defer.reject(new Error(error));
+				}
+			});
+		}
+	})
 	.then(function (executeScript) {
 		if(self.config.get("enable_duo"))
 		{
 			self.logger.info("[DUO] Enabling DUO for SSH");
-			exec("/bin/sh "+ __dirname +"/templates/enableDuoPAM.sh " + self.config.get("disable_password") ? "disable_password" : "", {uid:1000, gid:1000}, function (error, stout, stderr) {
-				if(self.config.get("disable_password"))
-					self.logger.warn("[DUO] Disabling password for SSH; if pam_duo fails open, ssh session is spawned without asking for a password!");
+			exec("/bin/sh "+ __dirname +"/templates/enableDuoPAM.sh", {uid:1000, gid:1000}, function (error, stout, stderr) {
 				if(error)
 				{
-					self.logger.error('Could not execute script with error: ' + error);
+					self.logger.error('Could not execute enable script with error: ' + error);
 					defer.reject(new Error(error));
 				}
 			});
@@ -198,42 +197,35 @@ duo.prototype.toggleDuoPAM = function()
 			exec("/bin/sh "+ __dirname +"/templates/disableDuoPAM.sh", {uid:1000, gid:1000}, function (error, stout, stderr) {				
 				if(error)
 				{
-					self.logger.error('Could not execute script with error: ' + error);
+					self.logger.error('Could not execute disable script with error: ' + error);
 					defer.reject(new Error(error));
 				}
 			});
 		}
 	})
-	.then(function (replace_sshd_config) {
-		exec("/usr/bin/sudo /bin/mv "+ __dirname +"/templates/sshd /etc/pam.d/sshd", {uid:1000, gid:1000}, function (error, stout, stderr) {
+	.then(function (place_files) {
+		exec("systemctl restart duo-pam-activator", {uid:1000, gid:1000}, function (error, stout, stderr) {
 			if(error)
 			{
-				self.logger.error('Could not replace /etc/asound.conf with error: ' + error);
+				self.logger.error('Could not replace /etc/pam.d/sshd with error: ' + error);
 				defer.reject(new Error(error));
 			}
 		});
-	})
-	.then(function (restore_file_owner) {
-		exec("/usr/bin/sudo /bin/chown root:root /etc/pam.d/sshd", {uid:1000, gid:1000}, function (error, stout, stderr) {
-			if(error)
-			{
-				self.logger.error('Could not change file permissions with error: ' + error);
-				defer.reject(new Error(error));
-			}
-		});
-		defer.resolve(restore_file_owner);
+		
+		defer.resolve(place_files);
+		self.logger.info("[DUO] Enabled DUO for SSH sessions");
+		self.commandRouter.pushToastMessage('success', "Successful push", "Successfully pushed new DUO configuration");
 	});
 	
-	self.commandRouter.pushToastMessage('success', "Successful push", "Successfully pushed new DUO configuration");
 	return defer.promise;
 };
 
-duo.prototype.createDuoConfig = function(pluginName, replacements)
+duo.prototype.createDuoConfig = function(replacements)
 {
 	var self = this;
 	var defer = libQ.defer();
 	
-	fs.readFile(__dirname + "/templates/pam_duo.conf", 'utf8', function (err, data) {
+	fs.readFile(__dirname + "/templates/pam_duo.template", 'utf8', function (err, data) {
 		if (err) {
 			defer.reject(new Error(err));
 		}

@@ -16,7 +16,7 @@ if [ ! -f $INSTALLING ]; then
 
 	# Download latest compiled DUO package from GitHub
 	mkdir /home/volumio/duo
-	wget https://github.com/Saiyato/volumio-duo-plugin/blob/master/binaries/duo-unix_1.11.4-1_armhf.deb -P /home/volumio/duo
+	wget https://github.com/Saiyato/volumio-duo-plugin/raw/master/binaries/duo-unix_1.11.4-1_armhf.deb -P /home/volumio/duo
 
 	# Install packages (server and client) and dependencies
 	for f in /home/volumio/duo/duo-unix*.deb; do dpkg -i "$f"; done
@@ -24,6 +24,7 @@ if [ ! -f $INSTALLING ]; then
 	chown -R volumio:volumio /etc/duo
 		
 	# Configure SSH
+	echo "Patching SSH daemon configuration..."
 	sed '/^ChallengeResponseAuthentication/{h;s/.*/ChallengeResponseAuthentication yes/};${x;/^$/{s//ChallengeResponseAuthentication yes/;H};x}' -i /etc/ssh/sshd_config
 	sed '/^PasswordAuthentication /{h;s/.*/PasswordAuthentication  yes/};${x;/^$/{s//PasswordAuthentication yes/;H};x}' -i /etc/ssh/sshd_config
 	sed '/^UseDNS/{h;s/.*/UseDNS no/};${x;/^$/{s//UseDNS no/;H};x}' -i /etc/ssh/sshd_config
@@ -36,7 +37,11 @@ if [ ! -f $INSTALLING ]; then
 	#	sed 's/^@include common-auth.*/#@include common-auth/g' -i /etc/pam.d/sshd
 	#fi
 	
+	systemctl enable /data/plugins/miscellanea/duo/unit/duo-pam-activator.service
+	systemctl start duo-pam-activator.service
+	
 	# Cleanup files
+	echo "Cleaning up after installation..."
 	rm -rf /home/volumio/duo
 	rm $INSTALLING
 	

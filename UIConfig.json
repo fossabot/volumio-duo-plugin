@@ -8,7 +8,7 @@
 		"label": "TRANSLATE.DUO.GENERAL",
 		"doc": "TRANSLATE.DUO.D_GENERAL",
 		"description": "TRANSLATE.DUO.DD_GENERAL",
-		"icon": "fa-shield-alt",
+		"icon": "fa-shield",
 		"onSave": {
 			"type": "controller",
 			"endpoint": "miscellanea/duo",
@@ -66,8 +66,8 @@
 			"description": "TRANSLATE.DUO.DD_FAIL_MODE",
 			"label": "TRANSLATE.DUO.FAIL_MODE",
 			"value": {
-				"value": safe,
-				"label": "Safe"
+				"value": "safe",
+				"label": "Safe (default)"
 			},
 			"options": []
 		},
