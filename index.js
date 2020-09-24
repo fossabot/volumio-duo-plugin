@@ -121,6 +121,7 @@ duo.prototype.saveConfig = function(data)
 	var self = this;
 	var defer = libQ.defer();
 	
+	//console.log('[DUO] config: ' + JSON.stringify(data));
 	self.config.set('enable_duo', data['enable_duo']);
 	self.config.set('ikey', data['ikey']);
 	self.config.set('skey', data['skey']);
@@ -129,12 +130,12 @@ duo.prototype.saveConfig = function(data)
 	self.config.set('disable_password', data['disable_password']);
 	
 	self.logger.info("Successfully updated DUO configuration");
-	self.toggleduo();
+	self.toggleDuo();
 	
 	return defer.promise;
 };
 
-duo.prototype.toggleduo = function()
+duo.prototype.toggleDuo = function()
 {
 	var self = this;
 	var defer = libQ.defer();
@@ -147,8 +148,9 @@ duo.prototype.toggleduo = function()
 		{ placeholder: "${FAILMODE}", replacement: self.config.get('failmode') }
 	];
 	
+	self.logger.info('[DUO] Updating system configuration...');
 	self.createDuoConfig(replacementDictionary)
-	.then(function (copy_sshd_config) {
+	.then(function (copySshdConfig) {
 		exec("/usr/bin/rsync --ignore-missing-args /etc/pam.d/sshd "+ __dirname +"/templates/sshd", {uid:1000, gid:1000}, function (error, stout, stderr) {
 			if(error)
 			{
@@ -157,10 +159,10 @@ duo.prototype.toggleduo = function()
 			}
 		});
 	})
-	.then(function (prepare_pwd_file) {
+	.then(function (preparePwdFile) {
 		if(self.config.get("disable_password"))
 		{
-			exec("/bin/touch "+ __dirname +"/templates/disable_password", {uid:1000, gid:1000}, function (error, stout, stderr) {
+			execSync("/bin/touch "+ __dirname +"/templates/disable_password", {uid:1000, gid:1000}, function (error, stout, stderr) {
 				if(error)
 				{
 					self.logger.error('Could not touch disable_password with error: ' + error);
@@ -170,7 +172,7 @@ duo.prototype.toggleduo = function()
 		}
 		else
 		{
-			exec("/bin/rm "+ __dirname +"/templates/disable_password", {uid:1000, gid:1000}, function (error, stout, stderr) {
+			execSync("/bin/rm -f "+ __dirname +"/templates/disable_password", {uid:1000, gid:1000}, function (error, stout, stderr) {
 				if(error)
 				{
 					self.logger.error('Could not touch disable_password with error: ' + error);
@@ -183,7 +185,7 @@ duo.prototype.toggleduo = function()
 		if(self.config.get("enable_duo"))
 		{
 			self.logger.info("[DUO] Enabling DUO for SSH");
-			exec("/bin/sh "+ __dirname +"/templates/enableDuoPAM.sh", {uid:1000, gid:1000}, function (error, stout, stderr) {
+			execSync("/bin/sh "+ __dirname +"/templates/enableDuoPAM.sh", {uid:1000, gid:1000}, function (error, stout, stderr) {
 				if(error)
 				{
 					self.logger.error('Could not execute enable script with error: ' + error);
@@ -194,7 +196,7 @@ duo.prototype.toggleduo = function()
 		else
 		{
 			self.logger.info("[DUO] Disabling DUO for SSH");
-			exec("/bin/sh "+ __dirname +"/templates/disableDuoPAM.sh", {uid:1000, gid:1000}, function (error, stout, stderr) {				
+			execSync("/bin/sh "+ __dirname +"/templates/disableDuoPAM.sh", {uid:1000, gid:1000}, function (error, stout, stderr) {				
 				if(error)
 				{
 					self.logger.error('Could not execute disable script with error: ' + error);
@@ -203,8 +205,8 @@ duo.prototype.toggleduo = function()
 			});
 		}
 	})
-	.then(function (place_files) {
-		exec("systemctl restart duo-pam-activator", {uid:1000, gid:1000}, function (error, stout, stderr) {
+	.then(function (placeFiles) {
+		exec("/usr/bin/sudo /bin/systemctl restart duo-pam-activator", {uid:1000, gid:1000}, function (error, stout, stderr) {
 			if(error)
 			{
 				self.logger.error('Could not replace /etc/pam.d/sshd with error: ' + error);
@@ -212,7 +214,7 @@ duo.prototype.toggleduo = function()
 			}
 		});
 		
-		defer.resolve(place_files);
+		defer.resolve(placeFiles);
 		self.logger.info("[DUO] Enabled DUO for SSH sessions");
 		self.commandRouter.pushToastMessage('success', "Successful push", "Successfully pushed new DUO configuration");
 	});
@@ -236,15 +238,15 @@ duo.prototype.createDuoConfig = function(replacements)
 			tmpConf = tmpConf.replace(replacements[rep]["placeholder"], replacements[rep]["replacement"]);			
 		}
 			
-		fs.writeFile(__dirname + "/pam_duo.conf", tmpConf, 'utf8', function (err) {
-				if (err)
-				{
-					self.commandRouter.pushConsoleMessage('Could not write the script with error: ' + err);
-					defer.reject(new Error(err));
-				}
-				else 
-					defer.resolve();
+		fs.writeFile(__dirname + "/templates/pam_duo.conf", tmpConf, 'utf8', function (error) {
+			if (error)
+			{
+				self.logger.error('Could not write the config file with error: ' + error);
+				defer.reject(new Error(error));
+			}				
 		});
+		
+		defer.resolve();
 	});
 	
 	return defer.promise;

@@ -22,5 +22,5 @@
   "disable_password": {
     "type": "boolean",
     "value": false
-  },
+  }
 }

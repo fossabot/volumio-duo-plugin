@@ -43,7 +43,7 @@
 		{
 			"id": "skey",
 			"element": "input",
-			"type": "text",
+			"type": "password",
 			"doc": "TRANSLATE.DUO.D_SECRET_KEY",
 			"description": "TRANSLATE.DUO.DD_SECRET_KEY",
 			"label": "TRANSLATE.DUO.SECRET_KEY",
