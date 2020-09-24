@@ -19,9 +19,9 @@ Until you fill in both username and password (the latter is optional, see plugin
 ![Alt text](/images/duo_logged_in_volumio.png?raw=true "Volumio logged in screen")
 
 As said you will receive a nice push message, with a pop-up describing the push
-![Alt text](/images/duo_ios_popup.png?raw=true "Push pop-up example")
+![Alt text](/images/duo_ios_popup.jpeg?raw=true "Push pop-up example")
 You only need to confirm by pressing the big green button (bottom left)
-![Alt text](/images/duo_push_msg.png?raw=true "DUO authentication request example")
+![Alt text](/images/duo_push_msg.jpeg?raw=true "DUO authentication request example")
 
 You can follow authentication requests in your DUO dashboard (Reports)
 ![Alt text](/images/duo_auth_log.png?raw=true "DUO authentication report example")
