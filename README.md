@@ -16,7 +16,7 @@ The login prompt will still look the same
 ![Alt text](/images/duo_login_volumio.png?raw=true "Volumio login prompt screen")
 
 Until you fill in both username and password (the latter is optional, see plugin settings screen) and you will receive a prompt on your phone (if configured obviously). It will show on the screen that a request has been pushed, when logging in, it will appear to be hanging.
-![Alt text](/images/duo_login_volumio.png?raw=true "Volumio logged in screen")
+![Alt text](/images/duo_logged_in_volumio.png?raw=true "Volumio logged in screen")
 
 As said you will receive a nice push message, with a pop-up describing the push
 ![Alt text](/images/duo_ios_popup.png?raw=true "Push pop-up example")
