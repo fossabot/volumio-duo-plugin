@@ -9,6 +9,15 @@ The plugin will take care of the heavy lifting, it will install a pre-compiled b
 
 Official DUO documentation can be found here: https://duo.com/docs/duounix#test-pam_duo
 
+### PAM modules
+```
+# Standard Un*x authentication.
+@include common-auth
+auth  [success=1 default=ignore] pam_duo.so
+auth  requisite pam_deny.so
+auth  required pam_permit.so
+```
+
 ## What?
 As said the plugin will enable DUO 2FA for starting/authenticating SSH sessions.
 
