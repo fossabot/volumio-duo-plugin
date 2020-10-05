@@ -1,5 +1,6 @@
 # volumio-duo-plugin
-A DUO plugin compiled for Volumio (Debian Jessie) on 32-bit ARM platforms (Raspberry Pi to be precise) and x86 machines. Other platforms might follow, but I will need resources to compile and test.
+A DUO plugin compiled for Volumio (Debian Jessie) on 32-bit ARM and x86 platforms (Raspberry Pi to be precise) and x86 machines. Other platforms might follow, but I will need resources to compile and test.
+More information on Volumio can be found here: https://volumio.org/
 
 ## Why?
 This plugin adds two-factor authentication (2FA) for SSH sessions to your Volumio device. At this moment there are still some issues when changing the password, as some hard-coded functions require the default password. However, security can be hardened by adding two-factor authentication to (at least) starting SSH sessions.
