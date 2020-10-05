@@ -1,5 +1,5 @@
 # volumio-duo-plugin
-A DUO plugin compiled for Volumio (Debian Jessie) on 32-bit ARM and x86 platforms (Raspberry Pi to be precise) and x86 machines. Other platforms might follow, but I will need resources to compile and test.
+A DUO plugin compiled for Volumio (Debian Jessie) on 32-bit ARM (Raspberry Pi to be precise) and x86 platforms and x86 machines. Other platforms might follow, but I will need resources to compile and test.
 More information on Volumio can be found here: https://volumio.org/
 
 ## Why?
