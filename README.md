@@ -43,3 +43,18 @@ When logged in, you can create an application you would like to protect with DUO
 
 ### Advanced
 If you're actively using DUO, you can alias the volumio username to your user. That way the authentication will reflect as you, instead of unknown (or you can create a volumio user in the dashboard). Obviously you can play around with policies as well, to make sure you tighten security as much as possible without compromising ease-of-use.
+
+## I don't trust you, I want to compile the binaries myself!
+Sure, in security it's quite common (and possibly healthy, at times) to distrust precompiled packages. Therefore you're more than welcome to compile your own binaries, just `./configure`, `make` and `make install` to overwrite the binaries in the prepared plugin.
+
+You'll need some packages to satisfy dependencies
+`sudo apt-get update && sudo apt-get install -y libssl-dev libpam-dev`
+
+Download and unzip DUO source
+`wget https://dl.duosecurity.com/duo_unix-latest.tar.gz`
+`tar zxf duo_unix-latest.tar.gz`
+
+Enter the directory and configure (with PAM and SSL), then make and install
+`./configure --with-pam --prefix=/usr && make && sudo make install`
+
+Have fun!
