@@ -24,6 +24,7 @@ As said the plugin will enable DUO 2FA for starting/authenticating SSH sessions.
 
 The login prompt will still look the same
 ![Alt text](/images/duo_login_volumio.png?raw=true "Volumio login prompt screen")
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FSaiyato%2Fvolumio-duo-plugin.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FSaiyato%2Fvolumio-duo-plugin?ref=badge_shield)
 
 Until you fill in both username and password (the latter is optional, see plugin settings screen) and you will receive a prompt on your phone (if configured obviously). It will show on the screen that a request has been pushed, when logging in, it will appear to be hanging.
 ![Alt text](/images/duo_logged_in_volumio.png?raw=true "Volumio logged in screen")
@@ -58,3 +59,6 @@ Enter the directory and configure (with PAM and SSL), then make and install
 `./configure --with-pam --prefix=/usr && make && sudo make install`
 
 Have fun!
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FSaiyato%2Fvolumio-duo-plugin.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FSaiyato%2Fvolumio-duo-plugin?ref=badge_large)
